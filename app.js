@@ -8,19 +8,68 @@ app.use(bodyParser.json());
 
 // For serving the static HTML file.
 app.get("/", (req, res) => {
-  res.sendFile(path.join(_dirname, "index.html"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.get("/getTodos", (req, res) => {
-  db.getDB().collection(collection).find({}).toArray((error, documents) => {
-    if (error) {
-      console.log("error");
-    } else {
-      console.log("documents");
-      res.json(documents);
-    }
-  })
-})
+  db.getDB()
+    .collection(collection)
+    .find({})
+    .toArray((error, documents) => {
+      if (error) {
+        console.log("error in app.get");
+      } else {
+        console.log("documents");
+        res.json(documents);
+      }
+    });
+});
+
+app.put("/:id", (req, res) => {
+  const todoID = req.params.id;
+  const userInput = req.body;
+  db.getDB()
+    .collection(collection)
+    .findOneAndUpdate(
+      {
+        _id: db.getPrimaryKey(todoID)
+      },
+      {
+        $set: {
+          todo: userInput.todo,
+          todo2: userInput.todo2
+        }
+      },
+      {
+        returnOriginal: false
+      },
+      (error, result) => {
+        if (error) {
+          console.log("error in app.put");
+        } else {
+          res.json(result);
+        }
+      }
+    );
+});
+
+app.post("/", (req, res) => {
+  const userInput = req.body;
+  db.getDB()
+    .collection(collection)
+    .insertOne(userInput, (error, result) => {
+      if (error) {
+        console.log("error in app.post");
+      } else {
+        res.json(
+          {
+            result: result,
+            document: result.ops[0]
+          }
+        )
+      }
+    });
+});
 
 // For the server. 
 db.connectToMongo((error) => {
