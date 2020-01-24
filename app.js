@@ -71,6 +71,12 @@ app.post("/", (req, res) => {
     });
 });
 
+app.delete("/:id", (req, res) => {
+  const todoID = req.params.id;
+  db.getDB()
+    .collection(collection)
+})
+
 // For the server. 
 db.connectToMongo((error) => {
   if (error) {
