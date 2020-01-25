@@ -5,7 +5,6 @@ const url = "mongodb://localhost:27017";
 const mongoOptions = { newUserUrlParser: true };
 
 const state = {
-  db: null
 };
 
 const connectToMongo = (callback) => {

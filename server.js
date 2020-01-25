@@ -6,6 +6,7 @@ const collection = "todo";
 const app = express();
 app.use(bodyParser.json());
 
+
 // For serving the static HTML file.
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
