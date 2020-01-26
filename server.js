@@ -1,11 +1,11 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
-const db = require("./db");
+const db = require("./public/db");
 const collection = "todo";
 const app = express();
 app.use(bodyParser.json());
-
+app.use(express.static("public"));
 
 // For serving the static HTML file.
 app.get("/", (req, res) => {

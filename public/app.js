@@ -57,4 +57,34 @@ $(document).ready(function () {
       // deleteTodo(todo, ids.listItemID, ids.deleteID);
     });
   }
+
+  form.submit(event => {
+    event.preventDefault();
+    fetch("/", {
+      method: "POST",
+      body: JSON.stringify({
+        todo: todoUserInput.val().trim()
+      }),
+      headers: {
+        "Content-Type": "application/json; charset=utf-8"
+      }
+    }).then(resposne => {
+      return response.json();
+    }).then(data => {
+      console.log("data");
+      if (!data.error) {
+        if (data.result.ok == 1 && data.result.n == 1) {
+          let ids = buildIDs(data.document);
+          display.append(buildTemplate(data.document.ids));
+          editTodo(data.document, ids.todoID, ids.editID);
+          deleteTodo(data.document, ids.listItemID, ids.deleteID);
+          displayMessage(true, data.msg);
+        }
+      } else {
+        displayMessage(false, data.error.message);
+        resetTodosInput();
+      }
+    })
+  })
 });
+
