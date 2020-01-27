@@ -69,10 +69,10 @@
   // Creates unique ID's to attach to the HTML elements.
   const buildIDs = (todo) => {
     return {
-      editID: `edit_ ${todo._id}`,
-      deleteID: `delete_ ${todo._id}`,
-      listItemID: `listItem_ ${todo._id}`,
-      todoID: `todo_ ${todo._id}`
+      editID: `edit_${todo._id}`,
+      deleteID: `delete_${todo._id}`,
+      listItemID: `listItem_${todo._id}`,
+      todoID: `todo_${todo._id}`
     }
   }
 
@@ -110,12 +110,31 @@
       let ids = buildIDs(todo);
       display.append(buildTemplate(todo, ids));
       // editTodo(todo, ids.todoID, ids.editID);
-      // deleteTodo(todo, ids.listItemID, ids.deleteID);
+      deleteTodo(todo, ids.listItemID, ids.deleteID);
     });
   }
 
-    form.submit(event => {
+  const deleteTodo = (todo, listItemID, deleteID) => {
+    let deleteButton = $(`#${deleteID}`);
+    deleteButton.click(() => {
+      alert("delete button clicked");
+      fetch(`/${todo._id}`, {
+        method: "DELETE",
+      }).then(response => {
+        return response.json();
+        console.log(response);
+      }).then(data => {
+        console.log(data);
+        if (data.ok == 1) {
+          $(`#${listItemID}`).remove();
+        }
+      });
+    });
+  }
+
+  form.submit(event => {
     event.preventDefault();
+    alert("alert button clicked");
     fetch("/", {
       method: "POST",
       body: JSON.stringify({
@@ -132,7 +151,7 @@
         if (data.result.ok == 1 && data.result.n == 1) {
           let ids = buildIDs(data.document);
           display.append(buildTemplate(data.document, ids));
-
+          deleteTodo(data.document, ids.listItemID, ids.deleteID);
         }
       } 
     })

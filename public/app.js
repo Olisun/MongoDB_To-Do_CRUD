@@ -13,9 +13,9 @@ $(document).ready(function () {
   // Creates unique ID's to attach to the HTML elements.
   const buildIDs = (todo) => {
     return {
-      editID: `edit_ ${todo._id}`,
-      deleteID: `delete_ ${todo._id}`,
-      listItemID: `listItem_ ${todo._id}`,
+      editID: `edit_${todo._id}`,
+      deleteID: `delete_${todo._id}`,
+      listItemID: `listItem_${todo._id}`,
       todoID: `todo_ ${todo._id}`
     }
   }
@@ -54,7 +54,24 @@ $(document).ready(function () {
       let ids = buildIDs(todo);
       display.append(buildTemplate(todo, ids));
       // editTodo(todo, ids.todoID, ids.editID);
-      // deleteTodo(todo, ids.listItemID, ids.deleteID);
+      deleteTodo(todo, ids.listItemID, ids.deleteID);
+    });
+  }
+
+  const deleteTodo = (todo, listItemID, deleteID) => {
+    let deleteButton = $(`#${deleteID}`);
+    deleteButton.click(() => {
+      fetch(`/${todo._id}`, {
+        method: "DELETE",
+      }).then(response => {
+        return response.json();
+        console.log(response);
+      }).then(data => {
+        console.log(data);
+        if (data.ok == 1) {
+          $(`#${listItemID}`).remove();
+        }
+      });
     });
   }
 
