@@ -53,7 +53,7 @@ $(document).ready(function () {
     data.forEach(todo => {
       let ids = buildIDs(todo);
       display.append(buildTemplate(todo, ids));
-      // editTodo(todo, ids.todoID, ids.editID);
+      editTodo(todo, ids.todoID, ids.editID);
       deleteTodo(todo, ids.listItemID, ids.deleteID);
     });
   }
@@ -74,6 +74,30 @@ $(document).ready(function () {
       });
     });
   }
+
+  const editTodo = (todo, todoID, editID) => {
+    let editButton = $(`#${editID}`);
+    editButton.click(() => {
+      fetch(`/${todo._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        body: JSON.stringify({
+          todo: todoUserInput.val().trim()
+        })
+      }).then(response => {
+        return response.json();
+      }).then(data => {
+        if (data.ok == 1) {
+          let todoIndex = $(`#${todo._id}`);
+          todoIndex.html(data.value.todo);
+          resetTodosInput();
+        }
+      })
+    })
+  }
+
 
   form.submit(event => {
     event.preventDefault();
